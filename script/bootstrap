@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Ensure .env file is present
+cp -n .env.example .env
+
+# Foreman
+gem install foreman
