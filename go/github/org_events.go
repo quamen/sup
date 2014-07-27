@@ -52,6 +52,7 @@ func (eventFetcher *EventFetcher) Events() (events *EventFetcher) {
 
 		switch status {
 		case "304 Not Modified":
+			log.Printf("No new events received for %s", os.Getenv("GITHUB_ORG"))
 			eventFetcher.previousHeaders.Status = status
 		default:
 			eventFetcher.previousHeaders.Status = status
