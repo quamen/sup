@@ -6,14 +6,26 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/codegangsta/negroni"
 	_ "github.com/joho/godotenv/autoload"
+	"github.com/quamen/sup/go/github"
 )
 
 var port = os.Getenv("PORT")
 
 func main() {
+
+	go func() {
+		// Loop for ever
+		eventFetcher := github.NewEventFetcher()
+		for {
+			eventFetcher = eventFetcher.Events()
+			// Wait 1 minute before looping again
+			time.Sleep(time.Minute * 1)
+		}
+	}()
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", handleIndex)
