@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"code.google.com/p/goauth2/oauth"
 )
@@ -20,18 +21,31 @@ type responseHeaders struct {
 	Status string
 }
 
-// NewEventFetcher returns an instance of EventFetcher
+// NewEventFetcher returns an instance of EventFetcher that is
+// polling for new events.
 func NewEventFetcher() (eventFetcher *EventFetcher) {
 	eventFetcher = &EventFetcher{}
+
+	go eventFetcher.poll()
 
 	return
 }
 
-// Events returns a struct representing events from the github API
+// poll loops infinitely, fetching new events every minute.
+func (eventFetcher *EventFetcher) poll() {
+	for {
+
+		eventFetcher.events()
+
+		time.Sleep(time.Minute * 1)
+	}
+}
+
+// events returns a struct representing events from the github API
 //
 //
 // It is stateful, only returning new events as it finds them.
-func (eventFetcher *EventFetcher) Events() (events *EventFetcher) {
+func (eventFetcher *EventFetcher) events() (events *EventFetcher) {
 
 	// Set OAuth access token
 	t := &oauth.Transport{
