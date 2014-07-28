@@ -1,7 +1,9 @@
 package github
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -41,11 +43,7 @@ func (eventFetcher *EventFetcher) poll() {
 	}
 }
 
-// events returns a struct representing events from the github API
-//
-//
-// It is stateful, only returning new events as it finds them.
-func (eventFetcher *EventFetcher) events() (events *EventFetcher) {
+func (eventFetcher *EventFetcher) events() {
 
 	// Set OAuth access token
 	t := &oauth.Transport{
@@ -61,36 +59,45 @@ func (eventFetcher *EventFetcher) events() (events *EventFetcher) {
 
 	resp, err := t.Client().Do(req)
 
-	if err == nil {
-		status := resp.Header.Get("Status")
-
-		switch status {
-		case "304 Not Modified":
-			log.Printf("No new events received for %s", os.Getenv("GITHUB_ORG"))
-			eventFetcher.previousHeaders.Status = status
-		default:
-			eventFetcher.previousHeaders.Status = status
-			eventFetcher.previousHeaders.ETag = resp.Header.Get("ETag")
-			log.Printf("New events received for %s", os.Getenv("GITHUB_ORG"))
-
-		}
-
-	} else {
+	if err != nil {
 		log.Printf("Could not fetch %s", uri)
-		return eventFetcher
+		return
 	}
 
-	return eventFetcher
+	status := resp.Header.Get("Status")
 
-	/*
-	   defer resp.Body.Close()
+	switch status {
+	case "304 Not Modified":
+		log.Printf("No new events received for %s", os.Getenv("GITHUB_ORG"))
+		eventFetcher.previousHeaders.Status = status
+		return
+	default:
+		eventFetcher.previousHeaders.Status = status
+		eventFetcher.previousHeaders.ETag = resp.Header.Get("ETag")
+		log.Printf("New events received for %s", os.Getenv("GITHUB_ORG"))
+	}
 
-	   contents, err := ioutil.ReadAll(resp.Body)
-	   if err != nil {
-	     log.Printf("Could not read response body for %s", uri)
-	     return
-	   }
+	defer resp.Body.Close()
 
-	   log.Printf("%s", contents)
-	*/
+	contents, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Printf("Could not read response body for %s", uri)
+		return
+	}
+
+	events := new([30]Event)
+	if err := json.Unmarshal(contents, &events); err != nil {
+    panic(err)
+  }
+
+  event := events[0]
+
+  log.Printf("ID is %s", *event.ID)
+	log.Printf("Type is %s", *event.Type)
+  log.Printf("Actor is %s", *event.Actor)
+  log.Printf("Repo is %s", *event.Repo)
+  log.Printf("Payload is %s", *event.RawPayload)
+  log.Printf("Public is %s", *event.Public)
+  log.Printf("Created At is %s", *event.CreatedAt)
+  log.Printf("Org is %s", *event.Org)
 }
