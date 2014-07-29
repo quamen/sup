@@ -18,12 +18,20 @@ module.exports = React.createClass
     events: @getEventsState()
 
   render: ->
-    <div>
-      <h1>Events</h1>
-      <table className="events">
-        { @renderHeader() }
-        { @renderBody() }
-      </table>
+    <div className="container">
+      <div className="row">
+        <div className="panel panel-default widget">
+          <div className="panel-heading">
+            <h3 className="panel-title">Recent Events</h3>
+            <span className="label label-info" dangerouslySetInnerHTML={ __html: @EventCount()}/>
+          </div>
+          <div className="panel-body">
+            <ul className="list-group">
+              { _(_(@state.events).sortBy((event) -> event.ID)).reverse().map(@renderEvent) }
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
 
   EventCount: ->
@@ -31,29 +39,6 @@ module.exports = React.createClass
 
   renderEvent: (event) ->
     <EventComponent event={ event } />
-
-  renderHeader: ->
-    <thead>
-      <tr>
-        <td className="events__NameCol">Event ID</td>
-        <td className="events__DescriptionCol">Event Type</td>
-      </tr>
-    </thead>
-
-  renderBody: ->
-    if @EventCount() isnt 0
-      <tbody>
-        { _(@state.events).map(@renderEvent) }
-      </tbody>
-    else
-      @renderNoEvents()
-
-  renderNoEvents: ->
-    <tbody>
-      <tr>
-        <td colSpan="2" className="Event__Noevents">Sorry, Friend! No events.</td>
-      </tr>
-    </tbody>
 
   onEventChange: ->
     @setState(events: @getEventsState())

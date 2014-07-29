@@ -70,9 +70,28 @@ module.exports = React.createClass({
     };
   },
   render: function() {
-    return React.DOM.div(null, React.DOM.h1(null, "Events"), React.DOM.table({
-      "className": "events"
-    }, this.renderHeader(), this.renderBody()));
+    return React.DOM.div({
+      "className": "container"
+    }, React.DOM.div({
+      "className": "row"
+    }, React.DOM.div({
+      "className": "panel panel-default widget"
+    }, React.DOM.div({
+      "className": "panel-heading"
+    }, React.DOM.h3({
+      "className": "panel-title"
+    }, "Recent Events"), React.DOM.span({
+      "className": "label label-info",
+      "dangerouslySetInnerHTML": {
+        __html: this.EventCount()
+      }
+    })), React.DOM.div({
+      "className": "panel-body"
+    }, React.DOM.ul({
+      "className": "list-group"
+    }, _(_(this.state.events).sortBy(function(event) {
+      return event.ID;
+    })).reverse().map(this.renderEvent))))));
   },
   EventCount: function() {
     return _.size(this.state.events);
@@ -81,26 +100,6 @@ module.exports = React.createClass({
     return EventComponent({
       "event": event
     });
-  },
-  renderHeader: function() {
-    return React.DOM.thead(null, React.DOM.tr(null, React.DOM.td({
-      "className": "events__NameCol"
-    }, "Event ID"), React.DOM.td({
-      "className": "events__DescriptionCol"
-    }, "Event Type")));
-  },
-  renderBody: function() {
-    if (this.EventCount() !== 0) {
-      return React.DOM.tbody(null, _(this.state.events).map(this.renderEvent));
-    } else {
-      return this.renderNoEvents();
-    }
-  },
-  renderNoEvents: function() {
-    return React.DOM.tbody(null, React.DOM.tr(null, React.DOM.td({
-      "colSpan": "2",
-      "className": "Event__Noevents"
-    }, "Sorry, Friend! No events.")));
   },
   onEventChange: function() {
     return this.setState({
@@ -127,17 +126,20 @@ module.exports = React.createClass({
     event: React.PropTypes.object.isRequired
   },
   render: function() {
-    return React.DOM.tr({
-      "className": "events__event"
-    }, React.DOM.td({
+    var image_tag;
+    image_tag = '<img src="' + this.props.event.actor.avatar_url + ' class="img-circle img-responsive" alt="" height="80", width="80">';
+    return React.DOM.li({
+      "className": "events__event list-group-item"
+    }, React.DOM.div({
+      "className": "row"
+    }, React.DOM.div({
+      "className": "col-xs-2 col-md-1",
       "dangerouslySetInnerHTML": {
-        __html: this.props.event.id
+        __html: image_tag
       }
-    }), React.DOM.td({
-      "dangerouslySetInnerHTML": {
-        __html: this.props.event.type
-      }
-    }));
+    }), React.DOM.div({
+      "className": "col-xs-10 col-md-11"
+    }, this.props.event.type)));
   }
 });
 

@@ -38,7 +38,9 @@ func (eventFetcher *EventFetcher) poll(notifier chan Event) {
 	for {
 
 		for _, event := range eventFetcher.events() {
-			notifier <- event
+			if event.ID != nil {
+				notifier <- event
+			}
 		}
 
 		time.Sleep(time.Minute * 1)
@@ -63,7 +65,7 @@ func (eventFetcher *EventFetcher) events() (events [30]Event) {
 
 	if err != nil {
 		log.Printf("Could not fetch %s", uri)
-		return events
+		return *new([30]Event)
 	}
 
 	status := resp.Header.Get("Status")
@@ -72,7 +74,7 @@ func (eventFetcher *EventFetcher) events() (events [30]Event) {
 	case "304 Not Modified":
 		log.Printf("No new events received for %s", os.Getenv("GITHUB_ORG"))
 		eventFetcher.previousHeaders.Status = status
-		return
+		return *new([30]Event)
 	default:
 		eventFetcher.previousHeaders.Status = status
 		eventFetcher.previousHeaders.ETag = resp.Header.Get("ETag")
@@ -84,23 +86,12 @@ func (eventFetcher *EventFetcher) events() (events [30]Event) {
 	contents, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Printf("Could not read response body for %s", uri)
-		return events
+		return *new([30]Event)
 	}
 
 	if err := json.Unmarshal(contents, &events); err != nil {
 		panic(err)
 	}
 
-	event := events[0]
-
-	log.Printf("ID is %s", *event.ID)
-	log.Printf("Type is %s", *event.Type)
-	log.Printf("Actor is %s", *event.Actor)
-	log.Printf("Repo is %s", *event.Repo)
-	log.Printf("Payload is %s", *event.RawPayload)
-	log.Printf("Public is %s", *event.Public)
-	log.Printf("Created At is %s", *event.CreatedAt)
-	log.Printf("Org is %s", *event.Org)
-
-	return events
+	return
 }
