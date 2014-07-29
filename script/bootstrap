@@ -3,5 +3,10 @@
 # Ensure .env file is present
 cp -n .env.example .env
 
+# NPM
+
+npm install
+
 # Foreman
+
 gem install foreman
