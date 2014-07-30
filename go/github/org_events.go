@@ -36,9 +36,8 @@ func NewEventFetcher(notifier chan Event) (eventFetcher *EventFetcher) {
 // poll loops infinitely, fetching new events every minute.
 func (eventFetcher *EventFetcher) poll(notifier chan Event) {
 	for {
-
 		for _, event := range eventFetcher.events() {
-			if event.ID != nil {
+			if event.ID != nil && event.SupportedPayload()  {
 				notifier <- event
 			}
 		}
