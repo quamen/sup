@@ -139,7 +139,11 @@ module.exports = React.createClass({
       }
     }), React.DOM.div({
       "className": "col-xs-10 col-md-11"
-    }, this.props.event.type)));
+    }, React.DOM.h3(null, this.title()))));
+  },
+  title: function() {
+    var _ref, _ref1, _ref2, _ref3;
+    return ((_ref = this.props.event.payload) != null ? (_ref1 = _ref.pull_request) != null ? _ref1.title : void 0 : void 0) || ((_ref2 = this.props.event.payload) != null ? (_ref3 = _ref2.issue) != null ? _ref3.title : void 0 : void 0) || this.props.event.type;
   }
 });
 

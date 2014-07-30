@@ -13,7 +13,14 @@ module.exports = React.createClass
         <div className="col-xs-2 col-md-1" dangerouslySetInnerHTML={ __html: image_tag }>
         </div>
         <div className="col-xs-10 col-md-11">
-          { @props.event.type }
+          <h3>
+            { @title() }
+          </h3>
         </div>
       </div>
     </li>
+
+  title: ->
+    @props.event.payload?.pull_request?.title ||
+    @props.event.payload?.issue?.title ||
+    @props.event.type
