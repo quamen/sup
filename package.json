@@ -1,0 +1,31 @@
+{
+  "name": "sup",
+  "version": "0.0.1",
+  "description": "Sup UI",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:quamen/sup.git"
+  },
+  "main": "js/application.coffee",
+  "dependencies": {
+    "es6-promise": "~0.1.2",
+    "react": "0.11.1",
+    "superagent": "~0.18.0",
+    "lodash": "~2.4.1"
+  },
+  "devDependencies": {
+    "browserify": "^4.2.0",
+    "coffee-react-transform": "^0.4.0",
+    "coffee-reactify": "^0.4.0",
+    "coffee-script": "^1.7.1",
+    "coffeeify": "^0.6.0",
+    "reactify": "^0.13.1",
+    "watchify": "^0.10.2"
+  },
+  "scripts": {
+    "start": "script/npm/watch"
+  },
+  "author": "Gareth Townsend",
+  "license": "Unlicenced"
+}

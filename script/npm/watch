@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+#
+# Development helper to watch and recompile JS assets as they change
+
+export NODE_PATH=$NODE_PATH:"$(pwd)/node_modules"
+export NODE_PATH=$NODE_PATH:"$(pwd)/js"
+
+watchify . \
+  --transform='coffee-reactify' \
+  --extension='.cjsx' \
+  --extension='.coffee' \
+  --outfile public/application.js \
+  --verbose
