@@ -68,7 +68,6 @@ class EventStore extends EventEmitter
 
   source = new EventSource('/events')
   source.onmessage = (e) =>
-    console.log e
     event = JSON.parse(e.data)
     store.create(event)
     @emitChange()
