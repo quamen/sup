@@ -1,0 +1,24 @@
+{
+	"ImportPath": "github.com/quamen/sup",
+	"GoVersion": "go1.2",
+	"Deps": [
+		{
+			"ImportPath": "code.google.com/p/goauth2/oauth",
+			"Comment": "weekly-40",
+			"Rev": "5877582f0cb070bc21b199dab5e7d18fb546444a"
+		},
+		{
+			"ImportPath": "github.com/codegangsta/negroni",
+			"Comment": "v0.1",
+			"Rev": "46a638d98be2af4fa6de146b5d28a9d9904a3949"
+		},
+		{
+			"ImportPath": "github.com/joho/godotenv",
+			"Rev": "3c13a80fe13f26da8d7cf5b257bdfe54975b8043"
+		},
+		{
+			"ImportPath": "github.com/nabeken/negroni-auth",
+			"Rev": "514fbce913a89e5a97d2cda7257c03be4a9cb724"
+		}
+	]
+}
