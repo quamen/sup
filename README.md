@@ -20,3 +20,4 @@ Sup is built using:
 3. `$ script/bootstrap`
 4. Set up your `.env` file
 5. `$ foreman start`
+
