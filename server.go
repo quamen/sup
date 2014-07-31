@@ -9,6 +9,7 @@ import (
 
 	"github.com/codegangsta/negroni"
 	_ "github.com/joho/godotenv/autoload"
+	"github.com/nabeken/negroni-auth"
 	"github.com/quamen/sup/go/broker"
 	"github.com/quamen/sup/go/github"
 )
@@ -24,6 +25,7 @@ func main() {
 	mux.HandleFunc("/events/", broker.ServeHTTP)
 
 	n := negroni.Classic()
+	n.Use(auth.Basic(os.Getenv("USERNAME"), os.Getenv("PASSWORD")))
 	n.UseHandler(mux)
 	n.Run(fmt.Sprintf(":%s", port))
 }
