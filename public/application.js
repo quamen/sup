@@ -102,6 +102,7 @@ module.exports = React.createClass({
     });
   },
   onEventChange: function() {
+    console.log("CHANGE EVENT");
     return this.setState({
       events: this.getEventsState()
     });
@@ -256,13 +257,13 @@ EventStore = (function(_super) {
     };
 
     InternalStore.prototype.replace = function(events) {
-      var ref, _i, _len, _results;
+      var event, _i, _len, _results;
       events || (events = {});
       this.reset();
       _results = [];
       for (_i = 0, _len = events.length; _i < _len; _i++) {
-        ref = events[_i];
-        _results.push(this.create(events));
+        event = events[_i];
+        _results.push(this.create(event));
       }
       return _results;
     };
@@ -290,7 +291,7 @@ EventStore = (function(_super) {
             if (!response.ok) {
               return reject(response);
             }
-            _this.replace(response.body);
+            _this.replace(JSON.parse(response.text));
             return resolve(response);
           });
         };
@@ -326,12 +327,12 @@ EventStore = (function(_super) {
   Dispatcher.register(function(payload) {
     switch (payload.action.actionType) {
       case constants.FETCH_EVENTS:
-        store.fetch().then(eventstore.emitChange);
+        store.fetch().then(EventStore.emitChange);
     }
     return true;
   });
 
-  source = new EventSource('/events');
+  source = new EventSource('/events/stream/');
 
   source.onmessage = function(e) {
     var event;

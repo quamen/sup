@@ -19,7 +19,7 @@ class EventStore extends EventEmitter
     replace: (events) ->
       events ||= {}
       @reset()
-      @create(events) for ref in events
+      @create(event) for event in events
 
     create: (data) ->
       @events[data.id] = data
@@ -37,7 +37,7 @@ class EventStore extends EventEmitter
         request.set('Accept', 'application/json')
         request.end (response) =>
           return reject(response) unless response.ok
-          @replace(response.body)
+          @replace(JSON.parse(response.text))
           resolve(response)
       )
 
@@ -63,10 +63,10 @@ class EventStore extends EventEmitter
   Dispatcher.register (payload) ->
     switch payload.action.actionType
       when constants.FETCH_EVENTS
-        store.fetch().then(eventstore.emitChange)
+        store.fetch().then(EventStore.emitChange)
     true
 
-  source = new EventSource('/events')
+  source = new EventSource('/events/stream/')
   source.onmessage = (e) =>
     event = JSON.parse(e.data)
     store.create(event)
