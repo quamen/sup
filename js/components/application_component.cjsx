@@ -41,6 +41,7 @@ module.exports = React.createClass
     <EventComponent event={ event } />
 
   onEventChange: ->
+    console.log "CHANGE EVENT"
     @setState(events: @getEventsState())
 
   getEventsState: ->

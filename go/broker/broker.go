@@ -66,6 +66,7 @@ func (broker *Broker) listen() {
 				output := new(bytes.Buffer)
 				enc := json.NewEncoder(output)
 				enc.Encode(event)
+
 				clientMessageChan <- output.Bytes()
 			}
 		}
