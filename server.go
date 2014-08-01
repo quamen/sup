@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/codegangsta/negroni"
 	_ "github.com/joho/godotenv/autoload"
@@ -21,6 +22,7 @@ var port = os.Getenv("PORT")
 func main() {
 	broker := broker.NewServer()
 	github.NewEventFetcher(broker.Notifier)
+	go heartBeatEvent(broker.Notifier)
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", handleIndex)
@@ -41,6 +43,29 @@ func handleIndex(w http.ResponseWriter, r *http.Request) {
 	}
 
 	t.Execute(w, "")
+}
+
+func heartBeatEvent(notifier chan github.Event) {
+	for {
+		time.Sleep(time.Second * 30)
+
+		results, err := redis.FetchReversedCollectionFromSortedSet("EVENTS", 1)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		var events []github.Event
+
+		for _, event := range results {
+			var a github.Event
+			if err := json.Unmarshal(event.([]byte), &a); err != nil {
+				panic(err)
+			}
+			events = append(events, a)
+		}
+
+		notifier <- events[0]
+	}
 }
 
 func handleEvents(w http.ResponseWriter, r *http.Request) {
