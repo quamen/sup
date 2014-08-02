@@ -1,13 +1,17 @@
 package github
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
+
+	"github.com/quamen/sup/go/redis"
 
 	"code.google.com/p/goauth2/oauth"
 )
@@ -37,7 +41,17 @@ func NewEventFetcher(notifier chan Event) (eventFetcher *EventFetcher) {
 func (eventFetcher *EventFetcher) poll(notifier chan Event) {
 	for {
 		for _, event := range eventFetcher.events() {
-			if event.ID != nil && event.SupportedPayload()  {
+			if event.ID != nil && event.SupportedPayload() {
+				output := new(bytes.Buffer)
+				enc := json.NewEncoder(output)
+				enc.Encode(event)
+				score, err := strconv.ParseInt(*event.ID, 10, 64)
+				if err != nil {
+					panic(err)
+				}
+
+				redis.AddToSortedSet("EVENTS", score, fmt.Sprintf(string(output.Bytes())))
+
 				notifier <- event
 			}
 		}
