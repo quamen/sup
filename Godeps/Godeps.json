@@ -13,12 +13,20 @@
 			"Rev": "46a638d98be2af4fa6de146b5d28a9d9904a3949"
 		},
 		{
+			"ImportPath": "github.com/garyburd/redigo/redis",
+			"Rev": "856744a0d55bbc9f94897dcd29ed48a0d978feed"
+		},
+		{
 			"ImportPath": "github.com/joho/godotenv",
 			"Rev": "3c13a80fe13f26da8d7cf5b257bdfe54975b8043"
 		},
 		{
 			"ImportPath": "github.com/nabeken/negroni-auth",
 			"Rev": "514fbce913a89e5a97d2cda7257c03be4a9cb724"
+		},
+		{
+			"ImportPath": "github.com/soveran/redisurl",
+			"Rev": "ac42ec99510b5f21d11560d316adcc5bc41f0915"
 		}
 	]
 }
