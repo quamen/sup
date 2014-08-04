@@ -102,7 +102,6 @@ module.exports = React.createClass({
     });
   },
   onEventChange: function() {
-    console.log("CHANGE EVENT");
     return this.setState({
       events: this.getEventsState()
     });
