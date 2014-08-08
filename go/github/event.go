@@ -22,10 +22,14 @@ type Event struct {
 // Payload returns the parsed event payload.
 func (event *Event) Payload() (payload interface{}) {
 	switch *event.Type {
-	case "PullRequestReviewCommentEvent":
-		payload = &PullRequestReviewCommentEvent{}
+	case "IssuesEvent":
+		payload = &IssuesEvent{}
 	case "IssueCommentEvent":
 		payload = &IssueCommentEvent{}
+	case "PullRequestEvent":
+		payload = &PullRequestEvent{}
+	case "PullRequestReviewCommentEvent":
+		payload = &PullRequestReviewCommentEvent{}
 	default:
 		return
 	}
@@ -39,9 +43,13 @@ func (event *Event) Payload() (payload interface{}) {
 // concrete Payload
 func (event *Event) SupportedPayload() (supported bool) {
 	switch *event.Type {
-	case "PullRequestReviewCommentEvent":
+	case "IssuesEvent":
 		return true
 	case "IssueCommentEvent":
+		return true
+	case "PullRequestEvent":
+		return true
+	case "PullRequestReviewCommentEvent":
 		return true
 	default:
 		log.Printf("Unsupported Payload: %s", *event.Type)
@@ -49,11 +57,10 @@ func (event *Event) SupportedPayload() (supported bool) {
 	}
 }
 
-// PullRequestReviewCommentEvent represents a comment on a pull request.
-// Only a subset of the total payload is parsed.
-type PullRequestReviewCommentEvent struct {
-	ID          *int         `json:"id,omitempty"`
-	PullRequest *PullRequest `json:"pull_request,omitemtpy"`
+// IssuesEvent represents an action on an issue that isn't a comment
+type IssuesEvent struct {
+	ID    *int   `json:"id,omitempty"`
+	Issue *Issue `json:"issue,omitemtpy"`
 }
 
 // IssueCommentEvent represents a comment on an issue.
@@ -61,4 +68,18 @@ type PullRequestReviewCommentEvent struct {
 type IssueCommentEvent struct {
 	ID    *int   `json:"id,omitempty"`
 	Issue *Issue `json:"issue,omitemtpy"`
+}
+
+// PullRequestEvent represents an action on a pull request that
+// isn't a comment.
+type PullRequestEvent struct {
+	ID          *int         `json:"id,omitempty"`
+	PullRequest *PullRequest `json:"pull_request,omitemtpy"`
+}
+
+// PullRequestReviewCommentEvent represents a comment on a pull request.
+// Only a subset of the total payload is parsed.
+type PullRequestReviewCommentEvent struct {
+	ID          *int         `json:"id,omitempty"`
+	PullRequest *PullRequest `json:"pull_request,omitemtpy"`
 }
