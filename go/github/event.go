@@ -22,6 +22,8 @@ type Event struct {
 // Payload returns the parsed event payload.
 func (event *Event) Payload() (payload interface{}) {
 	switch *event.Type {
+	case "IssuesEvent":
+		payload = &IssuesEvent{}
 	case "IssueCommentEvent":
 		payload = &IssueCommentEvent{}
 	case "PullRequestEvent":
@@ -41,6 +43,8 @@ func (event *Event) Payload() (payload interface{}) {
 // concrete Payload
 func (event *Event) SupportedPayload() (supported bool) {
 	switch *event.Type {
+	case "IssuesEvent":
+		return true
 	case "IssueCommentEvent":
 		return true
 	case "PullRequestEvent":
@@ -51,6 +55,12 @@ func (event *Event) SupportedPayload() (supported bool) {
 		log.Printf("Unsupported Payload: %s", *event.Type)
 		return false
 	}
+}
+
+// IssuesEvent represents an action on an issue that isn't a comment
+type IssuesEvent struct {
+	ID    *int   `json:"id,omitempty"`
+	Issue *Issue `json:"issue,omitemtpy"`
 }
 
 // IssueCommentEvent represents a comment on an issue.
