@@ -20,3 +20,10 @@ Sup is built using:
 3. `$ script/bootstrap`
 4. Set up your `.env` file
 5. `$ foreman start`
+
+## Inspiration and blatent code lifting
+
+The following two repos were super helpful in writing this, and I've definitely stolen ideas and code from both while learning my way around go.
+
+* https://github.com/google/go-github
+* https://github.com/kljensen/golang-html5-sse-example
